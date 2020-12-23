@@ -1,0 +1,25 @@
+body {
+  color: wheat;
+  background-color: black;
+}
+.timer {
+  display: flex;
+  padding: 20px;
+  width: 300px;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: 20px;
+}
+.field:not(:last-child) {
+  margin-right: 5px;
+}
+.actions {
+  display: flex;
+
+  width: 300px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.action-btn:not(:last-child) {
+  margin-right: 5px;
+}
