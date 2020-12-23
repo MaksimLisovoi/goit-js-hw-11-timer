@@ -5,27 +5,37 @@ refs = {
   secs: document.querySelector('span[data-value="secs"]'),
 
   btnStart: document.querySelector('button[data-action-start]'),
+  btnStop: document.querySelector('button[data-action-stop]'),
 };
-console.log(btnStart);
+
 const timer = {
+  intervalId: null,
+  isActive: false,
   start() {
-    const startTime = Date.now();
-    setInterval(() => {
+    if (this.isActive) {
+      return;
+    }
+    this.isActive = true;
+    const startTime = new Date('Jan 01, 2021');
+    this.intervalId = setInterval(() => {
       const currentTime = Date.now();
+      const deltaTime = startTime - currentTime;
 
-      // console.log(startTime);
-      // console.log(currentTime);
-
-      const deltaTime = currentTime - startTime;
       updateClockface(deltaTime);
     }, 1000);
   },
+
+  stop() {
+    clearInterval(this.intervalId);
+    updateClockface(0);
+    this.isActive = false;
+  },
 };
-timer.start();
+refs.btnStart.addEventListener('click', timer.start.bind(timer));
+refs.btnStop.addEventListener('click', timer.stop.bind(timer));
 
 function updateClockface(time) {
   const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-
   const hours = pad(
     Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
   );
