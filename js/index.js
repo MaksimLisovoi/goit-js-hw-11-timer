@@ -45,75 +45,66 @@
 //======Function Timer=========
 // let day = 'Jan 01 2022';
 
-function setTime(time) {
-  let days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-  let hours = pad(
-    Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-  );
-  let mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-  let secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-
-  return { days, hours, mins, secs };
-}
-
-function pad(val) {
-  return String(val).padStart(2, '0');
-}
-
-let interval;
-
-let selector = document.getElementById('timer-1');
-const refs = {
-  days: selector.querySelector('span[data-value="days"]'),
-  hours: selector.querySelector('span[data-value="hours"]'),
-  mins: selector.querySelector('span[data-value="mins"]'),
-  secs: selector.querySelector('span[data-value="secs"]'),
-
-  btnStart: document.querySelector('button[data-action-start]'),
-  btnStop: document.querySelector('button[data-action-stop]'),
-};
-
-function reset(...arr) {
-  return arr.map(el => (el.textContent = '00'));
-}
+// function reset(...arr) {
+//   return arr.map(el => (el.textContent = '00'));
+// }
 
 // =========== CLASS TIMER =========
+let btnStart = document.querySelector('button[data-action-start]');
+let btnStop = document.querySelector('button[data-action-stop]');
 class CountdownTimer {
-  constructor({ targetDate, selector }) {
-    this.selector = selector;
+  constructor({ selector, targetDate }) {
     this.targetDate = targetDate;
-  }
+    this.timer = document.getElementById(selector);
 
-  count() {
-    let x = setTime(new Date(this.targetDate) - Date.now());
-
-    refs.days.textContent = x.days;
-    refs.hours.textContent = x.hours;
-    refs.mins.textContent = x.mins;
-    refs.secs.textContent = x.secs;
+    this.days = this.timer.querySelector('span[data-value="days"]');
+    this.hours = this.timer.querySelector('span[data-value="hours"]');
+    this.mins = this.timer.querySelector('span[data-value="mins"]');
+    this.secs = this.timer.querySelector('span[data-value="secs"]');
   }
 
   start() {
-    interval = setInterval(() => {
+    this.count();
+
+    setInterval(() => {
       this.count();
     }, 1000);
   }
+
   stop() {
-    const { days, hours, mins, secs } = refs;
-    clearInterval(interval);
-    reset(days, hours, mins, secs);
+    clearInterval();
+  }
+
+  count() {
+    let time = this.targetDate - Date.now();
+
+    const { days, hours, mins, secs } = this.setTime(time);
+
+    this.days.textContent = days;
+    this.hours.textContent = hours;
+    this.mins.textContent = mins;
+    this.secs.textContent = secs;
+  }
+
+  setTime(time) {
+    let days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
+    let hours = this.pad(
+      Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+    );
+    let mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+    let secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
+
+    return { days, hours, mins, secs };
+  }
+
+  pad(val) {
+    return String(val).padStart(2, '0');
   }
 }
 
-refs.btnStart.addEventListener('click', () => {
-  timer.start();
-});
-
-refs.btnStop.addEventListener('click', () => {
-  timer.stop();
-});
-
-const timer = new CountdownTimer({
-  selector: '#timer-1',
+const timerNewYear = new CountdownTimer({
+  selector: 'timer-1',
   targetDate: new Date('Jan 01, 2022'),
 });
+
+timerNewYear.start();
